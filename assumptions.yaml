@@ -4,20 +4,22 @@ progress: True
 
 ###-----TREATMENT ALLOCATION----###
 # Assuming 77 year old male - https://www.cancerdata.nhs.uk/treatments
-surgery: 0.385
-chemotherapy: 0.258
-radiotherapy: 0.266
+treatment-distributions: [0.335175413, 0.083228036, 0.209740598, 0.147376245, 0.049030028, 0.074862494, 0.072866805, 0.027720381]
 
-###-----IMPLEMENTAION----###
-tablet-based-assessments: True
-face-to-face-assessments: False
+###-----IMPLEMENTATION----###
+tablet-based-assessments: False
+face-to-face-assessments-nurse: True
+face-to-face-assessments-consultant: True
+face-to-face-assessments-registrar: False
 telephone-assessments: False
 remote-assessments-where-possible: False
 
 ###-----SURGERY----------###
-bed-days: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
-  usual: 8.2
-  cga: 8.2 #5.9
+bed-days: # 1 + 7 + 5.2 + 8.3 + 11 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2868204/ https://academic.oup.com/ejcts/article/54/3/560/4921284, https://publishing.rcseng.ac.uk/doi/pdf/10.1308/003588413X13629960046039 https://bmchealthservres.biomedcentral.com/articles/10.1186/1472-6963-9-202, https://bci.leeds.ac.uk/wp-content/uploads/sites/24/2019/04/Length-of-Stay.pdf, https://bci.leeds.ac.uk/wp-content/uploads/sites/24/2019/04/Length-of-Stay.pdf, Effect: https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
+  usual: 7
+  cga: 7 #5.9
+# bed-days-alpha: 2.14
+# bed-days-beta: 3.04
 
 cost-per-excess-bed-day: #https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/261154/nhs_reference_costs_2012-13_acc.pdf
   usual: 390
@@ -31,39 +33,47 @@ readmissions: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
   usual: 0.25
   cga: 0.25 #0.167
 
-qaly-decrement: 0.03 # ± 0.015 https://pubmed.ncbi.nlm.nih.gov/34120179/
+#qaly-decrement: 0.03 # ± 0.015 https://pubmed.ncbi.nlm.nih.gov/34120179/
 
 ###-----CHEMOTHERAPY-----###
-chemotherapy-toxicity: # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
-  usual: 0.604
-  cga: 0.604 #0.501
+# chemotherapy-toxicity: # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
+#   usual: 0.604
+#   cga: 0.604 #0.501
 
-readmission-for-chemotherapy: # https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.e14508
-  usual: 0.13
-  cga: 0.13
+# readmission-for-chemotherapy: # https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.e14508
+#   usual: 0.13
+#   cga: 0.13
 
-mean-length-of-stay-following-chemotherapy-admission: #https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.e14508, https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y
-  usual: 4.4
-  cga: 4.4
+# mean-length-of-stay-following-chemotherapy-admission: #https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.e14508, https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y
+#   usual: 4.4
+#   cga: 4.4
 
-short-stay-following-chemotherapy-admission: #SD = 4.4 (https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y), P (X > x) assuming ormal = 0.411
-  usual: 0.589
-  cga: 0.589
+# short-stay-following-chemotherapy-admission: #SD = 4.4 (https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y), P (X > x) assuming ormal = 0.411
+#   usual: 0.613
+#   cga: 0.613
 
-long-stay-following-chemotherapy-admission: #SD = 4.4 (https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y), P (X > x) assuming ormal = 0.411
-  usual: 0.411
-  cga: 0.411
+# long-stay-following-chemotherapy-admission: #SD = 4.4 (https://bradscholars.brad.ac.uk/bitstream/handle/10454/17448/malton%2C%20s.r.pdf?sequence=1&isAllowed=y), P (X > x) assuming ormal = 0.411
+#   usual: 0.387
+#   cga: 0.387
 
 ###-----OUTCOMES--------###
-initial-qaly: 0.62 # https://academic.oup.com/ageing/advance-article/doi/10.1093/ageing/afab094/6296883 and AgeFiT (? need population norms for age and sex)
+initial-qaly-alpha: 25.83 # mean = 0.71, sd = 0.0757 #(mean of all cancer states 0.692 + 0.673 + 0.560 + 0.765 + 0.756 + 0.758 + 0.687 + 0.822 + 0.677) https://journals.sagepub.com/doi/abs/10.1177/0272989X11401031#abstract, https://academic.oup.com/ageing/advance-article/doi/10.1093/ageing/afab094/6296883 and AgeFiT (? need population norms for age and sex)
+initial-qaly-beta: 10.14 #0.0757 #SD from Excel
 
-risk-of-dying-all-cancers: 0.055 # Based on 10-year survival data and trial-and-error modelling to achieve mean mortality at 10-years. If non-cancer then 11.8% mortality risk at 10 years https://pubmed.ncbi.nlm.nih.gov/25479696/,https://www.cancerresearchuk.org/health-professional/cancer-statistics/survival/all-cancers-combined#heading-Zero, https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/lifeexpectancies/datasets/nationallifetablesunitedkingdomreferencetables
+10-year-survival-probabilities: [[ [0.966927,0.008152941], [0.585666667,0.223999533], [0.531723214,0.209598663], [0.477779762,0.209598663], [0.42383631,0.209598663], [0.369892857,0.224435471], [0.355121182,0.209598663], [0.340349507,0.209598663], [0.325577833,0.209598663], [0.310806158,0.209598663], [0.296034483,0.180360986] ], [ [0.966909439,0.008152941], [0.573633333,0.221205185], [0.518314286,0.201711806], [0.462995238,0.201711806], [0.40767619,0.201711806], [0.352357143,0.213638091], [0.331961576,0.201711806], [0.31156601,0.201711806], [0.291170443,0.201711806], [0.270774877,0.201711806], [0.25037931,0.17029214] ], [ [0.966944561,0.008152941], [0.5977,0.227373746], [0.545176786,0.219684717], [0.492653571,0.219684717], [0.440130357,0.219684717], [0.387607143,0.237048129], [0.378430542,0.219684717], [0.369253941,0.219684717], [0.36007734,0.219684717], [0.350900739,0.219684717], [0.341724138,0.194632276] ], [0.966927, 0.962759, 0.958710, 0.953778, 0.948148, 0.942265, 0.934168, 0.925655, 0.916437, 0.905027, 0.893977] ]
 
-risk-of-dying-surgical-complications: 0.3 # Based on POPS data itself from Moonsinghe et al. https://academic.oup.com/bja/article/113/6/977/250201#2961386, https://pubmed.ncbi.nlm.nih.gov/34120179/
+#risk-of-dying-all-cancers: 0.055 # Based on 10-year survival data and trial-and-error modelling to achieve mean mortality at 10-years. If non-cancer then 11.8% mortality risk at 10 years https://pubmed.ncbi.nlm.nih.gov/25479696/,https://www.cancerresearchuk.org/health-professional/cancer-statistics/survival/all-cancers-combined#heading-Zero, https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/lifeexpectancies/datasets/nationallifetablesunitedkingdomreferencetables
+
+#risk-of-dying-surgical-complications: 0.3 # Based on POPS data itself from Moonsinghe et al. https://academic.oup.com/bja/article/113/6/977/250201#2961386, https://pubmed.ncbi.nlm.nih.gov/34120179/
+
+#transition-prob-cancer: [0.414, 0.073720138, 0.079587327, 0.086469178, 0.094653815, 0.104549858, 0.050000001, 0.05263158, 0.055555556, 0.05882353]
+
+#transition-prob-cancer-comps: [0.420018523, 0.117071075, 0.126221762, 0.132996196, 0.139735475, 0.149289661, 0.09621171, 0.119490907, 0.154659199, 0.156557237]
 
 nice-recommended-yearly-discount: 0.035 # Discount by 3.5%/year NICE. Developing NICE Guidelines: The Manual. London: National Institute for Health and Care Excellence,2014.
 
-chemotherapy-qaly-decrement: 0.32 # ±0.03 https://www.sciencedirect.com/science/article/pii/S0959804911004230#s0120
+chemotherapy-qaly-decrement-alpha: 77.05 #mean 0.32±SD0.03 https://www.sciencedirect.com/science/article/pii/S0959804911004230#s0120
+chemotherapy-qaly-decrement-beta: 163.73
 
 advance-directive-completion: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
   usual: 0.104
@@ -75,7 +85,7 @@ hospitalisations: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.120
 
 er-visits: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12011
   usual: 0.307
-  cga: 0.307 #0.307
+  cga: 0.307 
 
 early-treatment-discontinuation: #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12011
   usual: 0.532

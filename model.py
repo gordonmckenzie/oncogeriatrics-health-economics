@@ -82,7 +82,7 @@ for arm in arms:
                     simulation.append({'name': p['name'], 'arm': p['arm'], 'status': g})
 
         costs = calculateCosts(simulation, arm)
-        parameter_values_usual.append(simulation) if arm == 'usual' else  parameter_values_cga.append(simulation)
+        parameter_values_usual.append(simulation) if arm == 'usual' else parameter_values_cga.append(simulation)
         usual.append(list(costs.values())) if arm == 'usual' else cga.append(list(costs.values()))
 
         i += 1
@@ -108,7 +108,7 @@ for i,m in enumerate(means):
     t.append([strings[i], f"{round(means[i],2):,} ({round(ci_ll[i],2):,} to {round(ci_ul[i],2):,})"])
 
 print("\n")
-print(tabulate(t, headers=['', 'Mean (2.5th and 97.5th percentile values)'], tablefmt="fancy_grid"))
+print(tabulate(t, headers=['', 'Mean (2.5th and 97.5th percentile values)'], tablefmt="tsv"))
 
 t2 =[]
 t2.append('Incremental net benefit (INB) of CGA compared to standard care (QALYs)')
@@ -121,6 +121,6 @@ for c in cet:
     t2.append(f"{round(inb_m,2):,} ({round(inb_ll,2):,} to {round(inb_ul,2):,})")
 
 print("\n")
-print(tabulate([t2], headers=['', 'CET = £13,000', 'CET = £20,000', 'CET = £30,000'], tablefmt="fancy_grid"))
+print(tabulate([t2], headers=['', 'CET = £13,000', 'CET = £20,000', 'CET = £30,000'], tablefmt="tsv"))
 
 

@@ -27,9 +27,13 @@ def calculateCosts(patient, a):
     ###----Implementation----##
     if arm == 2:
         if assumptions['tablet-based-assessments'] is True:
-            pretreatment_costs[0][2] = utilisation_costs[0][5]
-        if assumptions['face-to-face-assessments'] is True:
+            pretreatment_costs[0][2] = utilisation_costs[0][5] + utilisation_costs[23][5]
+        if assumptions['face-to-face-assessments-nurse'] is True:
             pretreatment_costs[3][2] = utilisation_costs[3][5]
+        if assumptions['face-to-face-assessments-consultant'] is True:
+            pretreatment_costs[3][2] = utilisation_costs[1][5]
+        if assumptions['face-to-face-assessments-registrar'] is True:
+            pretreatment_costs[3][2] = utilisation_costs[2][5]
         if assumptions['telephone-assessments'] is True:
             pretreatment_costs[3][2] = utilisation_costs[4][5]
     
@@ -56,23 +60,22 @@ def calculateCosts(patient, a):
     total_pretreatment = sum(cost[arm] for cost in pretreatment_costs)
     
     ###----Post-treatment costs----###
-    s = np.random.dirichlet( #Decision making in health economic analysis, https://www.cancerdata.nhs.uk/treatments
-        (0.335175413, 0.083228036, 0.209740598, 0.147376245, 0.049030028, 0.074862494, 0.072866805, 0.027720381)
-        )
+    # Decision making in health economic analysis, https://www.cancerdata.nhs.uk/treatments
+    s = np.random.dirichlet(assumptions['treatment-distributions'])
     max = np.amax(s)
     t = np.where(s == max)[0][0]
 
     chemo = False
     if t == 5 or t == 7 or t == 1 or t == 4:
         chemo = True
-        chemotox = cycleChemotoxicity(a)
-        if chemotox == 3:
+        chemotox = cycleChemotoxicity()
+        if chemotox == 2:
             posttreatment_costs[0][arm] = utilisation_costs[19][5]
-        elif chemotox == 4:
+        elif chemotox == 3:
             posttreatment_costs[0][arm] = utilisation_costs[20][5]
        
-        if rng.random() < assumptions['er-visits'][a]:
-            posttreatment_costs[7][arm] = utilisation_costs[21][5]
+        # if rng.random() < assumptions['er-visits'][a]:
+        #     posttreatment_costs[7][arm] = utilisation_costs[21][5]
     
     if t == 5 or t == 7 or t == 2 or t == 6:    
         posttreatment_costs[1][arm] = assumptions['bed-days'][a] * assumptions['cost-per-excess-bed-day'][a]

@@ -9,6 +9,9 @@ __pycache__/
 # VS code
 .vscode
 
+#Mac
+.DS_Store
+
 # Distribution / packaging
 .Python
 build/
@@ -136,5 +139,8 @@ dmypy.json
 
 # Project specific
 results/
+statistical/
+experimental/
 experimental.py
+spreadsheets/
 issues/
