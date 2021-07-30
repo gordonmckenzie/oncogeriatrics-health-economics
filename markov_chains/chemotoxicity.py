@@ -1,29 +1,29 @@
-#import yaml
+import yaml
 import numpy as np
 # import pandas as pd
 # from pgmpy.models import MarkovChain as MC
 # from pgmpy.factors.discrete import State
 # from scipy import stats
 
-# assumptions = None
-# with open("assumptions.yaml", 'r') as stream:
-#     assumptions = yaml.safe_load(stream)
+assumptions = None
+with open("assumptions.yaml", 'r') as stream:
+    assumptions = yaml.safe_load(stream)
 
 rng = np.random.default_rng()
 
-def cycleChemotoxicity(toxicity_effect=1):
+def cycleChemotoxicity(arm):
 
     # Distributions
-    toxicity = rng.beta(12,11)
+    toxicity_draw = rng.beta(12,11)
     readmission = rng.beta(9,61)
     los = rng.gamma(1, 1/0.277)
 
     state = 0
 
-    if (rng.random() < toxicity) * toxicity_effect:
+    if rng.random() < ((toxicity_draw * assumptions['reduced-chemotherapy-toxicity-effect']) if arm == 2 else toxicity_draw):
         state = 1
         if rng.random() < readmission:
-            if los < 5:
+            if los <= 1:
                 state = 2
             else: 
                 state = 3

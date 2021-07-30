@@ -16,28 +16,39 @@ t = 10 # Total length of time in years
 
 def getTransitionProbability(year=0, complications=False):
     survival = assumptions['10-year-survival-probabilities']
-    ul_0, ll_0, ul_1, ll_1 = 0,0,0,0
+    ul_0, ll_0, ul_1, ll_1, mu_0, mu_1 = 0,0,0,0,0,0
     if complications == True:
-        ul_0 = survival[0][year][0]
-        ll_0 = survival[1][year][0]
-        ul_1 = survival[0][year+1][0]
-        ll_1 = survival[1][year+1][0]
+        ll_0 = survival[1][year][1]
+        ul_0 = survival[1][year][2]
+        ll_1 = survival[1][year+1][1]
+        ul_1 = survival[1][year+1][2]
+        mu_0 = survival[1][year][0]
+        mu_1 = survival[1][year+1][0]
     else:
-        ll_0 = survival[0][year][0]
-        ul_0 = survival[2][year][0]
-        ll_1 = survival[0][year+1][0]
-        ul_1 = survival[2][year+1][0]
-    mu_0 = (ul_0+ll_0) / 2
-    sd_0 = ((ul_0 - ll_0) / 3.92) * math.sqrt(2)
-    mu_1 = (ul_1+ll_1) / 2
-    sd_1 = ((ul_1 - ll_1) / 3.92) * math.sqrt(2)
-    a_0 = (((1 - mu_0) / sd_0**2) - (1 / mu_0)) * mu_0**2
-    b_0 = a_0 * ((1 / mu_0) - 1)
-    a_1 = (((1 - mu_1) / sd_1**2) - (1 / mu_1)) * mu_1**2
-    b_1 = a_1 * ((1 / mu_1) - 1)
-    survival_0 = rng.beta(a_0,b_0)
-    survival_1 = rng.beta(a_1,b_1)
-    tp = 1 - (survival_1 / survival_0)
+        ll_0 = survival[0][year][1]
+        ul_0 = survival[0][year][2]
+        ll_1 = survival[0][year+1][1]
+        ul_1 = survival[0][year+1][2]
+        mu_0 = survival[0][year][0]
+        mu_1 = survival[0][year+1][0]
+    tp = 0
+    if year != 0:
+        sd_0 = ((ul_0 - ll_0) / 3.92)
+        sd_1 = ((ul_1 - ll_1) / 3.92)
+        a_0 = (((1 - mu_0) / sd_0**2) - (1 / mu_0)) * mu_0**2
+        b_0 = a_0 * ((1 / mu_0) - 1)
+        a_1 = (((1 - mu_1) / sd_1**2) - (1 / mu_1)) * mu_1**2
+        b_1 = a_1 * ((1 / mu_1) - 1)
+        survival_0 = rng.beta(a_0,b_0)
+        survival_1 = rng.beta(a_1,b_1)
+        tp = 1 - (survival_1 / survival_0)
+    else:
+        sd_1 = ((ul_1 - ll_1) / 3.92)
+        a_1 = (((1 - mu_1) / sd_1**2) - (1 / mu_1)) * mu_1**2
+        b_1 = a_1 * ((1 / mu_1) - 1)
+        survival_1 = rng.beta(a_1,b_1)
+        tp = 1 - (survival_1 / mu_0)
+
     return tp
 
 def cycleMortality(patient, arm, complications, chemo):
@@ -100,7 +111,7 @@ def cycleMortality(patient, arm, complications, chemo):
 #         {"name": "chemotherapy_mortality", "status": True if rng.random() < 0.03 else False, "arm": 'cga'}, 
 #         {"name": "surgical_mortality", "status": True if rng.random() < 0.01 else False, "arm": 'cga'},
 #     ]
-#     test.append(cycleMortality(patient, 'cga' if rng.random() < 0.5 else 'usual', True if rng.random() < 0.3 else False, True if rng.random() < 0.3 else False))
+#     test.append(cycleMortality(patient, 'cga' if rng.random() < 0.5 else 'usual', True, True if rng.random() < 0.3 else False))
 #     pts += 1 
 
 # print('Year','        Alive', '        Average final QALY', ' Cumulative QALYs')
@@ -125,8 +136,8 @@ def cycleMortality(patient, arm, complications, chemo):
 #     patients.append([year, d, cumulative_qalys]) # Alive
 #     pts += 1    
 
-#print(np.mean(np.array(means),axis=0))
-#print(np.std(np.array(means),axis=0))
+# print(np.mean(np.array(means),axis=0))
+# print(np.std(np.array(means),axis=0))
 
 #print(np.mean(np.array(patients),axis=0))
 # print('Year','Dead','Cumulative QALYs')

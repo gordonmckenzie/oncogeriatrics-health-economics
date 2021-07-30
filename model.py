@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import json, yaml, sys
 from calculate import calculateCosts
 from tabulate import tabulate
@@ -87,7 +88,17 @@ for arm in arms:
 
         i += 1
 
-dif = np.subtract(cga, usual)
+u = pd.DataFrame(usual, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
+c = pd.DataFrame(cga, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
+
+# print("\r")
+# print(u.mean())
+# print(c.mean())
+#dif = np.subtract(cga, usual)
+dif = c - u
+
+#dif.to_csv('test.csv')
+
 means = dif.mean(axis=0)
 ci_ll = np.percentile(dif, 2.5, axis=0)
 ci_ul = np.percentile(dif, 97.5, axis=0)

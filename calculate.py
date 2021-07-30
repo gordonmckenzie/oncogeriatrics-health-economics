@@ -1,88 +1,118 @@
+from markov_chains.treatment_change import cycleTreatmentChange
 import yaml
 import numpy as np
 from markov_chains.chemotoxicity import cycleChemotoxicity
 from markov_chains.mortality import cycleMortality
+import csv
 
 rng = np.random.default_rng()
 
-assumptions, pretreatment_costs, posttreatment_costs = None,None,None
+assumptions, utilisation_costs, pretreatment_costs, posttreatment_costs = None,None,None,None
 
 with open("assumptions.yaml", 'r') as stream:
     assumptions = yaml.safe_load(stream)
+
+with open("data/utilisation_costs.yaml", 'r') as stream:
+    utilisation_costs = yaml.safe_load(stream)
 
 def calculateCosts(patient, a):
 
     pretreatment_costs = np.genfromtxt('./templates/pretreatment_costs.tsv',dtype='S70,f8,f8', delimiter='\t')
     posttreatment_costs = np.genfromtxt('./templates/posttreatment_costs.tsv',dtype='S70,f8,f8', delimiter='\t')
-    utilisation_costs = np.genfromtxt('./data/utilisation_costs.tsv',dtype='S70,S20,f8,S20,f8,f8,S300', delimiter='\t')
+    #utilisation_costs = np.genfromtxt('./data/utilisation_costs.tsv',dtype='S70,S20,f8,S20,f8,f8,S300', delimiter='\t')
 
     arm = 1 if a == 'usual' else 2
 
-    complications = False
-
-    for param in patient:
-        if param['name'] == "major_surgical_complication" and param['arm'] == a and param['status'] == True:
-            complications = True
+    complications_draw = rng.beta(961, 8599)
+    complications = complications_draw * assumptions['reduced-surgical-complications-effect'] if arm == 2 else complications_draw
     
     ###----Implementation----##
     if arm == 2:
         if assumptions['tablet-based-assessments'] is True:
-            pretreatment_costs[0][2] = utilisation_costs[0][5] + utilisation_costs[23][5]
+            pretreatment_costs[0][2] = utilisation_costs['ga-using-tablet-technology'] + utilisation_costs['ga-using-tablet-staff']
         if assumptions['face-to-face-assessments-nurse'] is True:
-            pretreatment_costs[3][2] = utilisation_costs[3][5]
+            pretreatment_costs[3][2] = utilisation_costs['ga-using-nurse-f2f']
         if assumptions['face-to-face-assessments-consultant'] is True:
-            pretreatment_costs[3][2] = utilisation_costs[1][5]
+            pretreatment_costs[1][2] = utilisation_costs['ga-using-consultant']
         if assumptions['face-to-face-assessments-registrar'] is True:
-            pretreatment_costs[3][2] = utilisation_costs[2][5]
+            pretreatment_costs[2][2] = utilisation_costs['ga-using-registrar']
         if assumptions['telephone-assessments'] is True:
-            pretreatment_costs[3][2] = utilisation_costs[4][5]
+            pretreatment_costs[4][2] = utilisation_costs['ga-using-telephone-nurse-led']
     
     ###----Unmet needs----##
     for need in patient:
         if need['name'] == 'geriatrician' and need['status'] == True:
-            pretreatment_costs[1][arm] = utilisation_costs[1][5]
+            pretreatment_costs[13][arm] = pretreatment_costs[13][arm] + utilisation_costs['outpatient-physician']
         if need['name'] == 'dietetics' and need['status'] == True:
-            pretreatment_costs[6][arm] = utilisation_costs[6][5]
+            pretreatment_costs[6][arm] = utilisation_costs['dietician']
         if need['name'] == 'social_worker' and need['status'] == True:
-            pretreatment_costs[7][arm] = utilisation_costs[7][5]
+            pretreatment_costs[7][arm] = utilisation_costs['social-worker']
         if need['name'] == 'ot' and need['status'] == True:
-            pretreatment_costs[8][arm] = utilisation_costs[8][5]
+            pretreatment_costs[8][arm] = utilisation_costs['occupational-therapy']
         if need['name'] == 'pt' and need['status'] == True:
-            pretreatment_costs[9][arm] = utilisation_costs[9][5]
+            pretreatment_costs[9][arm] = utilisation_costs['physiotherapy']
         if need['name'] == 'mental_health' and need['status'] == True:
-            pretreatment_costs[10][arm] = utilisation_costs[11][5]
+            pretreatment_costs[10][arm] = utilisation_costs['cbt-course']
         if need['name'] == 'falls_clinic' and need['status'] == True:
-            pretreatment_costs[11][arm] = utilisation_costs[10][5]
+            pretreatment_costs[11][arm] = utilisation_costs['falls-clinic']
         if need['name'] == 'other_physician' and need['status'] == True:
-            pretreatment_costs[13][arm] = utilisation_costs[12][5]
+            pretreatment_costs[13][arm] = pretreatment_costs[13][arm] + utilisation_costs['outpatient-physician']
     
     ###----Sum pre-treatment costs----##
     total_pretreatment = sum(cost[arm] for cost in pretreatment_costs)
-    
+
     ###----Post-treatment costs----###
     # Decision making in health economic analysis, https://www.cancerdata.nhs.uk/treatments
-    s = np.random.dirichlet(assumptions['treatment-distributions'])
+    s = rng.dirichlet(assumptions['treatment-distributions'])
     max = np.amax(s)
     t = np.where(s == max)[0][0]
+
+    ###---Differences due to treatment changes---###
+    if assumptions['ga-changing-management-at-mdt-level'] and arm == 2:
+        t, cost_diff = cycleTreatmentChange(t) # t is now changed and there is cost saving/additional costs
+        posttreatment_costs[8][arm] = cost_diff
+
+    bed_days_draw = rng.gamma(
+        assumptions['bed-days-alpha'], 
+        assumptions['bed-days-beta']
+    ) 
+    bed_days = bed_days_draw * assumptions['reduced-los-effect'] if arm == 2 else bed_days_draw
+
+    requiring_itu = rng.binomial(
+        1,
+        assumptions['requiring-itu'] * assumptions['reduced-itu-admissions-effect'] if arm == 2 else assumptions['requiring-itu']
+    ) 
+
+    readmissions_draw = rng.beta(
+        assumptions['readmissions-alpha'], 
+        assumptions['readmissions-beta']
+    ) 
+    readmissions = readmissions_draw * assumptions['reduced-post-surgical-readmissions-effect'] if arm == 2 else readmissions_draw
+
+    er_visits_draw = rng.beta(
+        assumptions['er-visits-alpha'],
+        assumptions['er-visits-beta']
+    )
+    er_visits = er_visits_draw * assumptions['reduced-er-visits-effect'] if arm == 2 else er_visits_draw
 
     chemo = False
     if t == 5 or t == 7 or t == 1 or t == 4:
         chemo = True
-        chemotox = cycleChemotoxicity()
+        chemotox = cycleChemotoxicity(arm)
         if chemotox == 2:
-            posttreatment_costs[0][arm] = utilisation_costs[19][5]
+            posttreatment_costs[0][arm] = utilisation_costs['chemotherapy-toxicity-short-stay']
         elif chemotox == 3:
-            posttreatment_costs[0][arm] = utilisation_costs[20][5]
+            posttreatment_costs[0][arm] = utilisation_costs['chemotherapy-toxicity-long-stay']
        
-        # if rng.random() < assumptions['er-visits'][a]:
-        #     posttreatment_costs[7][arm] = utilisation_costs[21][5]
+    if rng.random() < ((er_visits * assumptions['reduced-er-visits-effect']) if arm == 2 else er_visits):
+        posttreatment_costs[7][arm] = utilisation_costs['er-visits']
     
     if t == 5 or t == 7 or t == 2 or t == 6:    
-        posttreatment_costs[1][arm] = assumptions['bed-days'][a] * assumptions['cost-per-excess-bed-day'][a]
-        if rng.random() < assumptions['requiring-itu'][a]:
-            posttreatment_costs[3][arm] = utilisation_costs[16][5]
-        if rng.random() < assumptions['readmissions'][a]:
-            posttreatment_costs[6][arm] = utilisation_costs[22][5]
+        posttreatment_costs[1][arm] = bed_days * assumptions['cost-per-excess-bed-day'] # Should balance out but earlier discharge possible with GA (removes excess bed day cost)
+        if requiring_itu == 1:
+            posttreatment_costs[3][arm] = utilisation_costs['hdu-or-itu-admission']
+        if rng.random() < readmissions:
+            posttreatment_costs[6][arm] = utilisation_costs['surgical-readmission']
 
     ###----Sum pre-treatment costs----##
     total_posttreatment = sum(cost[arm] for cost in posttreatment_costs)
@@ -92,7 +122,7 @@ def calculateCosts(patient, a):
     total_costs = total_pretreatment + total_posttreatment
 
     ###----QALYs--------------##
-    qalys = cycleMortality(patient, arm, complications, chemo)
+    qalys = cycleMortality(patient, arm, True if rng.random() < complications else False, chemo)
 
     return {
         'total_pretreatment': total_pretreatment,

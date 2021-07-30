@@ -1,23 +1,26 @@
-Patient assessment using tablet	Pre-treatment	35	Nurse (B6)	 1.85 	 64.75 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient assessment using face-to-face CGA (consultant review)	Pre-treatment	30	Consultant	 4.43 	 132.90 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient assessment using face-to-face CGA (registrar review)	Pre-treatment	30	Registrar	 1.77 	 53.10 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient assessment using face-to-face CGA (initial nurse review)	Pre-treatment	60	Nurse (B6)	 1.85 	 111.00 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient assessment using telephone	Pre-treatment	60	Nurse (B6)	 1.85 	 111.00 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient assessment remotely	Pre-treatment	0	N/A	0	 -   	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient contact with dietician	Pre-treatment	30	Dietician	 1.85 	 55.50 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient contact with social worker	Pre-treatment	30	Social worker	 1.02 	 30.60 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient contact with occupational therapist	Pre-treatment	30	OT	 1.89 	 56.70 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient contact with physiotherapist 	Pre-treatment	30		 1.89 	 56.70 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Patient contact with falls clinic	Pre-treatment	N/A	N/A	N/A	 578.00 	https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2956532/
-GP consultation for mental health	Pre-treatment	11.7			 34.00 	https://www.ncbi.nlm.nih.gov/books/NBK409325/, around 27% of those with depression will use this https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2409546/
-Outpatient contact with physician	Pre-treatment	30	Consultant	 4.43 	 132.90 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Chemotherapy toxicity admission	Pre-treatment					Priced by bed stay and percentage requiring admission
-Patient contact with CBT treatment course	Pre-treatment				 955.00 	https://www.clahrc-cp.nihr.ac.uk/wp-content/uploads/2012/05/IAPTechnicalReport-V5.docx
-Patient contact with hospital physician as inpatient	Post-treatment	30	Consultant	 4.43 	 132.90 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Admission to high dependency unit/intensive care	Post-treatment	N/A	N/A	N/A	 1969.00 	NHS Reference costs 2015/16. https://improvement.nhs.uk/resources/reference-costs/
-Allocation to care package postdicharge	Post-treatment	N/A	N/A	N/A	 1,979.00 	Unit Costs of Health and Social Care 2018, Personal Social Services Research Unit, University of Kent.
-Referral to community rehabilitation facility	Post-treatment	N/A	N/A	N/A	 2749.00 	Unit Costs of Health and Social Care 2012, Personal Social Services Research Unit, University of Kent.
-Admission <5 days	Post-treatment	N/A	N/A	N/A	626.00 	https://kar.kent.ac.uk/70995/1/Unit%20Costs%202018%20-%20FINAL%20with%20bookmarks%20and%20covers%20%282%29.pdf
-Admission >=5 days	Post-treatment	N/A	N/A	N/A	3056.00 	https://kar.kent.ac.uk/70995/1/Unit%20Costs%202018%20-%20FINAL%20with%20bookmarks%20and%20covers%20%282%29.pdf
-Emergency department visits	Post-treatment	N/A	N/A	N/A	138.00 	https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/577083/Reference_Costs_2015-16.pdf
-Readmission within 30 days of discharge surgery	Post-treatment	N/A	N/A	N/A	 3317.00 	NHS Reference costs 2017/18. https://improvement.nhs.uk/resources/reference-costs/
+# Per patient unit costs 
+
+# Pretreatment costs
+ga-using-tablet-technology: 2
+ga-using-tablet-staff: 68.78
+ga-using-consultant: 141.18
+ga-using-registrar: 56.41
+ga-using-nurse-f2f: 117.91
+ga-using-telephone-nurse-led: 117.91
+dietician: 58.96
+social-worker: 32.51
+occupational-therapy: 60.23
+physiotherapist: 60.23
+falls-clinic: 747.07
+outpatient-physician: 141.18
+memory-clinic: 1325
+cbt-course: 1053.40
+
+# Posttreatment costs
+
+excess-bed-day: 366.01
+hdu-or-itu-admission: 2160.21
+chemotherapy-toxicity-short-stay: 614.75 # One day
+chemotherapy-toxicity-long-stay: 3437.29 # More than one day. Trim point for excess bed day unclear.
+er-visits: 169.92
+surgical-readmission: 3522.70
