@@ -70,7 +70,7 @@ def cycleMortality(patient, arm, complications, chemo):
 
     #cycle = [[0, 1, initial_qaly, cumulative_qalys]]
 
-    #alive = 1 # Testing
+    alive = 1 # Testing
 
     year = 0
 
@@ -84,7 +84,7 @@ def cycleMortality(patient, arm, complications, chemo):
                 initial_qaly - rng.beta(assumptions['chemotherapy-qaly-decrement-alpha'], assumptions['chemotherapy-qaly-decrement-beta'])
             
             if rng.random() < (getTransitionProbability(i) if complications == False else getTransitionProbability(i, True)):
-                #alive = 0 # Testing
+                alive = 0 # Testing
                 break
 
             initial_qaly = initial_qaly - (initial_qaly * assumptions['nice-recommended-yearly-discount'])
@@ -111,7 +111,7 @@ def cycleMortality(patient, arm, complications, chemo):
 #         {"name": "chemotherapy_mortality", "status": True if rng.random() < 0.03 else False, "arm": 'cga'}, 
 #         {"name": "surgical_mortality", "status": True if rng.random() < 0.01 else False, "arm": 'cga'},
 #     ]
-#     test.append(cycleMortality(patient, 'cga' if rng.random() < 0.5 else 'usual', True, True if rng.random() < 0.3 else False))
+#     test.append(cycleMortality(patient, 'cga' if rng.random() < 0.5 else 'usual', True if rng.random() < 0.3 else False, True if rng.random() < 0.3 else False))
 #     pts += 1 
 
 # print('Year','        Alive', '        Average final QALY', ' Cumulative QALYs')

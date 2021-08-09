@@ -14,7 +14,16 @@ rng = np.random.default_rng()
 
 # model.add_transition_model('single', {0:{0: 1, 1: 0}})
 
-#other care; chemotherapy only; surgery only; radiotherapy only; chemotherapy and radiotherapy; surgery and chemotherapy; surgery and radiotherapy; surgery, radiotherapy and chemotherapy
+"""
+other care; 
+chemotherapy only; 
+surgery only; 
+radiotherapy only; 
+chemotherapy and radiotherapy; 
+surgery and chemotherapy; 
+surgery and radiotherapy; 
+surgery, radiotherapy and chemotherapy
+"""
 initial_state_map = {
     0: 'bsc',
     1: 'single',
@@ -54,9 +63,32 @@ def cycleTreatmentChange(initial_state):
                     cost_diff = costMatrix[i][ii]
                     pass
 
+    # This will capture most decisions initially
     for k,v in initial_state_map.items():
         if v == change:
             change_map = k
+    
+    # If multiple treatment includes chemotherapy and surgery and the change is to single modality, 
+    # this will almost always involve other care (e.g. hormonal therapy) or radiotherapy
+    # Since radiotherpy has no further effects, allocation to 0 is the same
+    if initial_state in [4,5,6,7] and change == "single":
+        change_map = 0
+
+    # If the initial state was other (e.g. BSC) and single treatment is proposed,
+    # this will almost always be hormonal or radiotherapy so 0 again is appropriate 
+    if initial_state == 0 and change == "single":
+        change_map = 0
+    
+    # If the initial state was surgery only and now multiple treatments are proposed, 
+    # this may include the addition of chemotherapy or chemo and radiotherapy
+    # reflecting states 5 and 7 in a 2:1 ratio 
+    if initial_state == 2 and change == "multiple":
+        change_map = rng.choice([5,7], p=[0.33, 0.67])
+
+    # If the initial state was other (e.g. hormonal therapy in this case) and now the decision is multiple therapies,
+    # this may include chemotherapy in about 50% of cases
+    if initial_state == 0 and change == "multiple":
+        change_map = rng.choice([0, 1])
     
     return change_map, cost_diff
 

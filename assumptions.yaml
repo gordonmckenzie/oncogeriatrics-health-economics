@@ -13,15 +13,15 @@ face-to-face-assessments-consultant: True
 face-to-face-assessments-registrar: False
 telephone-assessments: False
 remote-assessments-where-possible: False
-ga-changing-management-at-mdt-level: True
+ga-changing-management-at-mdt-level: False
 
 ###-----GA EFFECTS--------###
-reduced-los-effect: 0.1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
-reduced-chemotherapy-toxicity-effect: 0.1 #https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
-reduced-er-visits-effect: 0.9 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12011 
-reduced-itu-admissions-effect: 0.9
-reduced-post-surgical-readmissions-effect: 0.1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
-reduced-surgical-complications-effect: 0.1
+reduced-los-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
+reduced-chemotherapy-toxicity-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
+reduced-er-visits-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12011 
+reduced-itu-admissions-effect: 1
+reduced-post-surgical-readmissions-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
+reduced-surgical-complications-effect: 1
 
 ###-----SURGERY----------###
 # bed-days: # 1 + 7 + 5.2 + 8.3 + 11 
@@ -32,8 +32,6 @@ reduced-surgical-complications-effect: 0.1
 # https://bci.leeds.ac.uk/wp-content/uploads/sites/24/2019/04/Length-of-Stay.pdf 
 bed-days-alpha: 2.14
 bed-days-beta: 3.04
-
-cost-per-excess-bed-day: 390 #https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/261154/nhs_reference_costs_2012-13_acc.pdf
 
 requiring-itu: 0.097 #https://pubmed.ncbi.nlm.nih.gov/21732168/,https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
 
@@ -75,8 +73,8 @@ er-visits-alpha: 0.78
 er-visits-beta: 6.31
 
 ###-----OUTCOMES--------###
-initial-qaly-alpha: 25.83 # mean = 0.71, sd = 0.0757 #(mean of all cancer states 0.692 + 0.673 + 0.560 + 0.765 + 0.756 + 0.758 + 0.687 + 0.822 + 0.677) https://journals.sagepub.com/doi/abs/10.1177/0272989X11401031#abstract, https://academic.oup.com/ageing/advance-article/doi/10.1093/ageing/afab094/6296883 and AgeFiT (? need population norms for age and sex)
-initial-qaly-beta: 10.14 #0.0757 #SD from Excel
+initial-qaly-alpha: 37.79 # mean = 0.73, sd = 0.0611 #(mean of all cancer states 0.692 + 0.673 + 0.560 + 0.765 + 0.756 + 0.758 + 0.687 + 0.822 + 0.677) https://journals.sagepub.com/doi/abs/10.1177/0272989X11401031#abstract, https://academic.oup.com/ageing/advance-article/doi/10.1093/ageing/afab094/6296883 and AgeFiT (? need population norms for age and sex)
+initial-qaly-beta: 13.93 #0.0757 #SD from Excel
 
 #10-year-survival-probabilities: [[ [0.966927,0.008152941], [0.585666667,0.223999533], [0.531723214,0.209598663], [0.477779762,0.209598663], [0.42383631,0.209598663], [0.369892857,0.224435471], [0.355121182,0.209598663], [0.340349507,0.209598663], [0.325577833,0.209598663], [0.310806158,0.209598663], [0.296034483,0.180360986] ], [ [0.966909439,0.008152941], [0.573633333,0.221205185], [0.518314286,0.201711806], [0.462995238,0.201711806], [0.40767619,0.201711806], [0.352357143,0.213638091], [0.331961576,0.201711806], [0.31156601,0.201711806], [0.291170443,0.201711806], [0.270774877,0.201711806], [0.25037931,0.17029214] ], [ [0.966944561,0.008152941], [0.5977,0.227373746], [0.545176786,0.219684717], [0.492653571,0.219684717], [0.440130357,0.219684717], [0.387607143,0.237048129], [0.378430542,0.219684717], [0.369253941,0.219684717], [0.36007734,0.219684717], [0.350900739,0.219684717], [0.341724138,0.194632276] ], [0.966927, 0.962759, 0.958710, 0.953778, 0.948148, 0.942265, 0.934168, 0.925655, 0.916437, 0.905027, 0.893977] ]
 10-year-survival-probabilities: [[[0.966927,0.966927,0.966927], [0.612698455,0.60812702,0.617308356], [0.562841206,0.557729740,0.568075262], [0.512983957,0.507332459,0.518842168], [0.463126708,0.456935179,0.469609074], [0.413269459,0.406537899,0.42037598], [0.398573265,0.388813642,0.408659174], [0.383877071,0.371089385,0.396942367], [0.369180878,0.353365128,0.385225561], [0.354484684,0.335640871,0.373508755], [0.33978849,0.317916613,0.361791949] ], [ [0.966927,0.966927,0.966927], [0.5757967,0.571500594,0.580128954], [0.506758824,0.502156672,0.51147135], [0.442758053,0.437880228,0.447814293], [0.383670899,0.378541613,0.389041125], [0.328976358,0.32361781,0.334633387], [0.305312979,0.297836965,0.313038934], [0.276877368,0.267654048,0.286300918], [0.241984418,0.231617779,0.252501115], [0.211537096,0.200292138,0.222889623], [0.208269589,0.194863464,0.221756365] ] ]

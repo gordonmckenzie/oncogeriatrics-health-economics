@@ -1,9 +1,8 @@
-from markov_chains.treatment_change import cycleTreatmentChange
 import yaml
 import numpy as np
 from markov_chains.chemotoxicity import cycleChemotoxicity
 from markov_chains.mortality import cycleMortality
-import csv
+from markov_chains.treatment_change import cycleTreatmentChange
 
 rng = np.random.default_rng()
 
@@ -19,12 +18,12 @@ def calculateCosts(patient, a):
 
     pretreatment_costs = np.genfromtxt('./templates/pretreatment_costs.tsv',dtype='S70,f8,f8', delimiter='\t')
     posttreatment_costs = np.genfromtxt('./templates/posttreatment_costs.tsv',dtype='S70,f8,f8', delimiter='\t')
-    #utilisation_costs = np.genfromtxt('./data/utilisation_costs.tsv',dtype='S70,S20,f8,S20,f8,f8,S300', delimiter='\t')
-
+   
     arm = 1 if a == 'usual' else 2
 
     complications_draw = rng.beta(961, 8599)
-    complications = complications_draw * assumptions['reduced-surgical-complications-effect'] if arm == 2 else complications_draw
+    complications_adjusted = complications_draw * assumptions['reduced-surgical-complications-effect'] if arm == 2 else complications_draw
+    complications = True if rng.random() < complications_adjusted else False
     
     ###----Implementation----##
     if arm == 2:
@@ -41,7 +40,8 @@ def calculateCosts(patient, a):
     
     ###----Unmet needs----##
     for need in patient:
-        if need['name'] == 'geriatrician' and need['status'] == True:
+        # If seen by geriatrician does not need to be referred to geriatrician!
+        if need['name'] == 'geriatrician' and need['status'] == True and assumptions['face-to-face-assessments-consultant'] == False:
             pretreatment_costs[13][arm] = pretreatment_costs[13][arm] + utilisation_costs['outpatient-physician']
         if need['name'] == 'dietetics' and need['status'] == True:
             pretreatment_costs[6][arm] = utilisation_costs['dietician']
@@ -62,13 +62,12 @@ def calculateCosts(patient, a):
     total_pretreatment = sum(cost[arm] for cost in pretreatment_costs)
 
     ###----Post-treatment costs----###
-    # Decision making in health economic analysis, https://www.cancerdata.nhs.uk/treatments
     s = rng.dirichlet(assumptions['treatment-distributions'])
     max = np.amax(s)
     t = np.where(s == max)[0][0]
 
     ###---Differences due to treatment changes---###
-    if assumptions['ga-changing-management-at-mdt-level'] and arm == 2:
+    if assumptions['ga-changing-management-at-mdt-level'] == True and arm == 2:
         t, cost_diff = cycleTreatmentChange(t) # t is now changed and there is cost saving/additional costs
         posttreatment_costs[8][arm] = cost_diff
 
@@ -108,13 +107,13 @@ def calculateCosts(patient, a):
         posttreatment_costs[7][arm] = utilisation_costs['er-visits']
     
     if t == 5 or t == 7 or t == 2 or t == 6:    
-        posttreatment_costs[1][arm] = bed_days * assumptions['cost-per-excess-bed-day'] # Should balance out but earlier discharge possible with GA (removes excess bed day cost)
+        posttreatment_costs[1][arm] = bed_days * utilisation_costs['excess-bed-day'] # Should balance out but earlier discharge possible with GA (removes excess bed day cost)
         if requiring_itu == 1:
             posttreatment_costs[3][arm] = utilisation_costs['hdu-or-itu-admission']
         if rng.random() < readmissions:
             posttreatment_costs[6][arm] = utilisation_costs['surgical-readmission']
 
-    ###----Sum pre-treatment costs----##
+    ###----Sum post-treatment costs----##
     total_posttreatment = sum(cost[arm] for cost in posttreatment_costs)
     total_posttreatment = 0 if np.isnan(total_posttreatment) else total_posttreatment
 
@@ -122,7 +121,7 @@ def calculateCosts(patient, a):
     total_costs = total_pretreatment + total_posttreatment
 
     ###----QALYs--------------##
-    qalys = cycleMortality(patient, arm, True if rng.random() < complications else False, chemo)
+    qalys = cycleMortality(patient, arm, complications, chemo)
 
     return {
         'total_pretreatment': total_pretreatment,

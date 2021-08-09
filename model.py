@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import json, yaml, sys
 from calculate import calculateCosts
 from tabulate import tabulate
@@ -8,6 +7,9 @@ paramaters, assumptions = None, None
 
 with open('./data/parameters.json') as f:
     parameters = json.load(f)
+
+# with open('./data/parameters.yaml') as stream:
+#     parameters = yaml.safe_load(stream)
 
 with open("assumptions.yaml", 'r') as stream:
     assumptions = yaml.safe_load(stream)
@@ -59,7 +61,7 @@ for arm in arms:
                             sd = (p['ul_range'] - p['ll_range']) / 4
                             scale = sd**2 / p['mean']
                         shape = p['mean']**2 / sd**2
-                        g = np.random.default_rng().gamma(shape, scale)
+                        g = rng.gamma(shape, scale)
                     elif p['distribution'] == 'beta':
                         a,b = 0,0
                         #https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
@@ -73,7 +75,7 @@ for arm in arms:
                             sd = (p['ul_range'] - p['ll_range']) / 4
                             a = (((1 - p['mean']) / sd**2) - (1 / p['mean'])) * p['mean']**2
                         b = a * (1 / (p['mean']) - 1)
-                        g = np.random.default_rng().beta(a, b)
+                        g = rng.beta(a, b)
                 # Tests
                 # print(np.mean(g), np.std(g))
                 # print(np.percentile(g, 2.5),  np.percentile(g, 97.5))
@@ -88,14 +90,14 @@ for arm in arms:
 
         i += 1
 
-u = pd.DataFrame(usual, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
-c = pd.DataFrame(cga, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
+# u = pd.DataFrame(usual, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
+# c = pd.DataFrame(cga, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
 
 # print("\r")
 # print(u.mean())
 # print(c.mean())
-#dif = np.subtract(cga, usual)
-dif = c - u
+dif = np.subtract(cga, usual)
+#dif = c - u
 
 #dif.to_csv('test.csv')
 
