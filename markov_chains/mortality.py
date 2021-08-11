@@ -9,45 +9,17 @@ with open("assumptions.yaml", 'r') as stream:
 
 t = 10 # Total length of time in years
 
-#ones = np.full(shape=10, fill_value=1, dtype=int)
-
-#tps_cancer = assumptions['transition-prob-cancer'] 
-#tps_cancer_comps = assumptions['transition-prob-cancer-comps']
-
 def getTransitionProbability(year=0, complications=False):
     survival = assumptions['10-year-survival-probabilities']
-    ul_0, ll_0, ul_1, ll_1, mu_0, mu_1 = 0,0,0,0,0,0
+    mu_0, mu_1 = 0,0
     if complications == True:
-        ll_0 = survival[1][year][1]
-        ul_0 = survival[1][year][2]
-        ll_1 = survival[1][year+1][1]
-        ul_1 = survival[1][year+1][2]
-        mu_0 = survival[1][year][0]
-        mu_1 = survival[1][year+1][0]
+        mu_0 = survival[1][year]
+        mu_1 = survival[1][year+1]
     else:
-        ll_0 = survival[0][year][1]
-        ul_0 = survival[0][year][2]
-        ll_1 = survival[0][year+1][1]
-        ul_1 = survival[0][year+1][2]
-        mu_0 = survival[0][year][0]
-        mu_1 = survival[0][year+1][0]
-    tp = 0
-    if year != 0:
-        sd_0 = ((ul_0 - ll_0) / 3.92)
-        sd_1 = ((ul_1 - ll_1) / 3.92)
-        a_0 = (((1 - mu_0) / sd_0**2) - (1 / mu_0)) * mu_0**2
-        b_0 = a_0 * ((1 / mu_0) - 1)
-        a_1 = (((1 - mu_1) / sd_1**2) - (1 / mu_1)) * mu_1**2
-        b_1 = a_1 * ((1 / mu_1) - 1)
-        survival_0 = rng.beta(a_0,b_0)
-        survival_1 = rng.beta(a_1,b_1)
-        tp = 1 - (survival_1 / survival_0)
-    else:
-        sd_1 = ((ul_1 - ll_1) / 3.92)
-        a_1 = (((1 - mu_1) / sd_1**2) - (1 / mu_1)) * mu_1**2
-        b_1 = a_1 * ((1 / mu_1) - 1)
-        survival_1 = rng.beta(a_1,b_1)
-        tp = 1 - (survival_1 / mu_0)
+        mu_0 = survival[0][year]
+        mu_1 = survival[0][year+1]
+
+    tp = 1 - (mu_1 / mu_0)
 
     return tp
 
@@ -58,8 +30,6 @@ def cycleMortality(patient, arm, complications, chemo):
     chemoMortality, surgicalMortality = False, False
 
     for param in patient:
-        if param['name'] == "QALY_baseline" and param['arm'] == arm:
-            initial_qaly = param['status']
         if param['name'] == "chemotherapy_mortality" and param['arm'] == arm and param['status'] == True:
             chemoMortality = True
         if param['name'] == "surgical_mortality" and param['arm'] == arm and param['status'] == True:
@@ -70,7 +40,7 @@ def cycleMortality(patient, arm, complications, chemo):
 
     #cycle = [[0, 1, initial_qaly, cumulative_qalys]]
 
-    alive = 1 # Testing
+    #alive = 1 # Testing
 
     year = 0
 
@@ -84,7 +54,7 @@ def cycleMortality(patient, arm, complications, chemo):
                 initial_qaly - rng.beta(assumptions['chemotherapy-qaly-decrement-alpha'], assumptions['chemotherapy-qaly-decrement-beta'])
             
             if rng.random() < (getTransitionProbability(i) if complications == False else getTransitionProbability(i, True)):
-                alive = 0 # Testing
+                #alive = 0 # Testing
                 break
 
             initial_qaly = initial_qaly - (initial_qaly * assumptions['nice-recommended-yearly-discount'])

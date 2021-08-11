@@ -3,17 +3,6 @@ import numpy as np
 
 rng = np.random.default_rng()
 
-# from pgmpy.models import MarkovChain as MC
-# model = MC()
-
-# model.add_variables_from(['single', 'multiple'], [2, 1])
-# model.add_variables_from(['multiple', 'single'], [1, 1])
-# model.add_variables_from(['multiple', 'bsc'], [1, 1])
-# model.add_variables_from(['bsc', 'single'], [1, 1])
-# model.add_variables_from(['single', 'bsc'], [2, 1])
-
-# model.add_transition_model('single', {0:{0: 1, 1: 0}})
-
 """
 other care; 
 chemotherapy only; 
@@ -35,18 +24,9 @@ initial_state_map = {
     7: 'multiple'
 }
 
-#matrix
-# transitionMatrix = [
-#     ['single', 'multiple', 0.010667, 948.4582227],  
-#     ['multiple', 'single', 0.016, -948.4582227],
-#     ['multiple', 'bsc', 0.010666667, 5100.836111],
-#     ['bsc', 'single', 0.008, -6049.294334],
-#     ['single', 'bsc', 0.130666667, 6049.294334],
-# ]
-
 transitionName = [["single","multiple","bsc"],["multiple","single","bsc"],["bsc","single"]]
 transitionMatrix = [[0.858666333, 0.010667, 0.130666667], [0.973333333, 0.016, 0.010666667], [0.992, 0.008]]
-costMatrix = [[0, 948.4582227, 6049.294334], [0, -948.4582227, 5100.836111], [0, -6049.294334]]
+costMatrix = [[0, 2211.53, 6928.91], [0, -2211.53, 4717.38], [0, -6928.91]]
 
 def cycleTreatmentChange(initial_state):
 
@@ -70,7 +50,7 @@ def cycleTreatmentChange(initial_state):
     
     # If multiple treatment includes chemotherapy and surgery and the change is to single modality, 
     # this will almost always involve other care (e.g. hormonal therapy) or radiotherapy
-    # Since radiotherpy has no further effects, allocation to 0 is the same
+    # Since radiotherapy has no further effects, allocation to 0 is the same
     if initial_state in [4,5,6,7] and change == "single":
         change_map = 0
 

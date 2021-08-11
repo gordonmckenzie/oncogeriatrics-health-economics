@@ -1,8 +1,6 @@
 import yaml
 import numpy as np
 # import pandas as pd
-# from pgmpy.models import MarkovChain as MC
-# from pgmpy.factors.discrete import State
 # from scipy import stats
 
 assumptions = None
@@ -18,9 +16,13 @@ def cycleChemotoxicity(arm):
     readmission = rng.beta(9,61)
     los = rng.gamma(1, 1/0.277)
 
+    reduced_chemotherapy_toxicity_effect = 1
+    if assumptions['reduced-chemotherapy-toxicity-effect'] == True:
+        reduced_chemotherapy_toxicity_effect = rng.lognormal(-0.53, 0.85)
+
     state = 0
 
-    if rng.random() < ((toxicity_draw * assumptions['reduced-chemotherapy-toxicity-effect']) if arm == 2 else toxicity_draw):
+    if rng.random() < ((toxicity_draw * reduced_chemotherapy_toxicity_effect) if arm == 2 else toxicity_draw):
         state = 1
         if rng.random() < readmission:
             if los <= 1:
