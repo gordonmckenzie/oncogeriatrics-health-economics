@@ -87,17 +87,42 @@ for i,m in enumerate(means):
 print("\n")
 print(tabulate(t, headers=['', 'Mean (2.5th and 97.5th percentile values)'], tablefmt="tsv"))
 
-t2 =[]
-t2.append('Incremental net benefit (INB) of CGA compared to standard care (QALYs)')
+t2 = []
+t2_r = []
+t2_r.append('Incremental net benefit (INB) of CGA compared to standard care (QALYs)')
 cet = [13000,20000,30000]
 
 for c in cet:
     inb_m = means[8] - (means[7] / c)
     inb_ll = ci_ll[8] - (ci_ll[7] / c)
     inb_ul = ci_ul[8] - (ci_ul[7] / c)
-    t2.append(f"{round(inb_m,2):,} ({round(inb_ll,2):,} to {round(inb_ul,2):,})")
+    t2_r.append(f"{round(inb_m,2):,} ({round(inb_ll,2):,} to {round(inb_ul,2):,})")
+
+t2.append(t2_r)
+
+# t2_r = []
+# t2_r.append('Probability INHB <0 (decision error)')
+# for c in cet:
+#     inb = dif[8] - (dif[7] / c)
+#     kde = scipy.stats.gaussian_kde(inb)
+#     xs = np.arange(-10,11,1)
+#     kde.covariance_factor = lambda : .50
+#     kde._compute_covariance()
+#     prob = kde.integrate_box_1d(-10,0)
+#     t2_r.append(round(prob, 2))
+
+# # t2.append(t2_r)
+# # t2_r = []
+# # t2_r.append('Expected cost of uncertainty per patient (QALYs)')
+# # for c in cet:
+# #     inb = dif[8] - (dif[7] / c)
+# #     mean = inb[inb < 0].mean()
+# #     t2_r.append(abs(round(mean, 2)))
+
+# # t2.append(t2_r)
 
 print("\n")
-print(tabulate([t2], headers=['', 'CET = £13,000', 'CET = £20,000', 'CET = £30,000'], tablefmt="tsv"))
+print(tabulate(t2, headers=['', 'CET = £13,000', 'CET = £20,000', 'CET = £30,000'], tablefmt="tsv"))
 
+print("\n")
 

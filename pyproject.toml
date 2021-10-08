@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "model.nosync"
+version = "0.1.0"
+description = "Health economics simulator for older adults with cancer"
+authors = ["Gordon McKenzie <gordon.mckenzie@hyms.ac.uk>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7.3,<3.11"
+numpy = "^1.21.2"
+PyYAML = "^5.4.1"
+tabulate = "^0.8.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
