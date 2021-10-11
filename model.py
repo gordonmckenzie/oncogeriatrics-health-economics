@@ -1,7 +1,9 @@
 import numpy as np
+import pandas as pd
 import yaml, sys
 from calculate import calculateCosts
 from tabulate import tabulate
+import scipy.stats
 
 paramaters, assumptions = None, None
 
@@ -27,7 +29,6 @@ for arm in arms:
 
     while i < assumptions['simulations']:
 
-        #https://github.com/tqdm/tqdm
         if assumptions['progress'] == True:
             sys.stdout.write(f"\rSimulating {arm} arm: {round((i / (assumptions['simulations'])) * 100)}% complete")
             sys.stdout.flush()
@@ -63,6 +64,7 @@ for arm in arms:
 # c = pd.DataFrame(cga, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
 
 dif = np.subtract(cga, usual)
+#np.savetxt("explore.csv", dif, delimiter=",")
 
 means = dif.mean(axis=0)
 ci_ll = np.percentile(dif, 2.5, axis=0)
@@ -100,26 +102,28 @@ for c in cet:
 
 t2.append(t2_r)
 
-# t2_r = []
-# t2_r.append('Probability INHB <0 (decision error)')
-# for c in cet:
-#     inb = dif[8] - (dif[7] / c)
-#     kde = scipy.stats.gaussian_kde(inb)
-#     xs = np.arange(-10,11,1)
-#     kde.covariance_factor = lambda : .50
-#     kde._compute_covariance()
-#     prob = kde.integrate_box_1d(-10,0)
-#     t2_r.append(round(prob, 2))
+t2_r = []
+t2_r.append('Probability INHB <0 (decision error)')
 
-# # t2.append(t2_r)
-# # t2_r = []
-# # t2_r.append('Expected cost of uncertainty per patient (QALYs)')
-# # for c in cet:
-# #     inb = dif[8] - (dif[7] / c)
-# #     mean = inb[inb < 0].mean()
-# #     t2_r.append(abs(round(mean, 2)))
+df = pd.DataFrame(dif)
 
-# # t2.append(t2_r)
+for c in cet:
+    df['inb'] = df.apply(lambda x: x[8] - (x[7] / c), axis=1)
+    kde = scipy.stats.gaussian_kde(df['inb'])
+    kde.covariance_factor = lambda : .50
+    kde._compute_covariance()
+    prob = kde.integrate_box_1d(-7,0)
+    t2_r.append(round(prob, 2))
+
+t2.append(t2_r)
+
+t2_r = []
+t2_r.append('Expected cost of uncertainty per patient (QALYs)')
+for c in cet:
+    mean = df[df['inb'] < 0]['inb'].mean()
+    t2_r.append(abs(round(mean, 2)))
+
+t2.append(t2_r)
 
 print("\n")
 print(tabulate(t2, headers=['', 'CET = £13,000', 'CET = £20,000', 'CET = £30,000'], tablefmt="tsv"))
