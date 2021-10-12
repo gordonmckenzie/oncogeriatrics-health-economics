@@ -1,4 +1,3 @@
-#import matplotlib.pyplot as plt
 import numpy as np
 
 rng = np.random.default_rng()
@@ -71,15 +70,3 @@ def cycleTreatmentChange(initial_state):
         change_map = rng.choice([0, 1])
     
     return change_map, cost_diff
-
-# test = []
-
-# for _ in range(0,5000):
-#     delta = cycleTreatmentChange(7)
-#     test.append(delta)
-
-# a = np.array(test)
-# unique, counts = np.unique(a, return_counts=True)
-# s = sum(counts)
-# means = [count / s for count, _ in zip(counts, unique)]
-# print(means)

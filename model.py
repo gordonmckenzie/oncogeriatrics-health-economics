@@ -60,11 +60,7 @@ for arm in arms:
 
         i += 1
 
-# u = pd.DataFrame(usual, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
-# c = pd.DataFrame(cga, columns=['total_pretreatment', 'total_posttreatment', 'chemotherapy_toxicity', 'er_visits', 'postoperative_bed_days', 'other_postoperative', 'total_costs', 'qalys'])
-
 dif = np.subtract(cga, usual)
-#np.savetxt("explore.csv", dif, delimiter=",")
 
 means = dif.mean(axis=0)
 ci_ll = np.percentile(dif, 2.5, axis=0)

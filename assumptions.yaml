@@ -7,18 +7,18 @@ progress: True
 treatment-distributions: [0.335175413, 0.083228036, 0.209740598, 0.147376245, 0.049030028, 0.074862494, 0.072866805, 0.027720381]
 
 ###-----IMPLEMENTATION----###
-tablet-based-assessments: True
-face-to-face-assessments-nurse: False
-face-to-face-assessments-consultant: False
+tablet-based-assessments: False
+face-to-face-assessments-nurse: True
+face-to-face-assessments-consultant: True
 face-to-face-assessments-registrar: False
 telephone-assessments: False
-ga-changing-management-at-mdt-level: False
+ga-changing-management-at-mdt-level: True
 only-undergoing-chemotherapy: False
-only-undergoing-surgery: True
+only-undergoing-surgery: False
 
 ###-----GA EFFECTS--------###
 reduced-los-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012
-reduced-chemotherapy-toxicity-effect: False # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
+reduced-chemotherapy-toxicity-effect: True # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12010
 reduced-er-visits-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12011 
 reduced-itu-admissions-effect: 1
 reduced-post-surgical-readmissions-effect: 1 # https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.12012

@@ -28,6 +28,8 @@ You can of course install and run this model without Poetry, provided the follow
 - numpy = "^1.21.2"
 - PyYAML = "^5.4.1"
 - tabulate = "^0.8.9"
+- pandas = "^1.3.3"
+- scipy = "^1.7.1"
 
 #### Running
 
