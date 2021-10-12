@@ -138,7 +138,7 @@ The unit costs can be found in the `utilisation_costs.yaml` file. These are agai
 
 ##### Unmet needs
 
-Unmet need is difficult to model economically, but the differences in the identification of unmet needs between standard care and introducing geriatric assessment are shown below. These are contained within the `parameters.yaml` file. The key values to modify are the mean, upper and lower limits of each parameters for the relevant arm (standard care *versus* standard care and geriatric assessment).
+Unmet need is difficult to model economically, but the differences in the identification of unmet needs between standard care and introducing geriatric assessment are contained within the `parameters.yaml` file. The key values to modify are the mean, upper and lower limits of each parameters for the relevant arm (standard care *versus* standard care and geriatric assessment).
 
 #### License
 
