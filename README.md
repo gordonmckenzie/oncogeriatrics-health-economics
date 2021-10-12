@@ -6,7 +6,7 @@ This repository accompanies a scientific paper currently under peer-review. McKe
 
 #### Description
 
-This Python model has been packaged using [Poetry](https://python-poetry.org/) and can be used as follows. If you have Poetry already installed or wish to use for this project, follow the steps below: - 
+This Python model has been packaged using [Poetry](https://python-poetry.org/) and can be used as follows. If you have Poetry already installed or wish to use it for this project, follow the steps below: - 
 
 #### Installation with Poetry
 
@@ -84,24 +84,24 @@ To adjust basic assumptions of the model, open the file `assumptions.yaml`. This
 
 | Parameters  | Description | Default       |
 | ----------- | ----------- | ------------- |
-| `bed-days-alpha` | The $\alpha$ parameter of a Gamma distribution for postoperative bed days | 2.14 |
-| `bed-days-beta` | The $\beta$ parameter of a Gamma distribution for postoperative bed days | 3.04 |
+| `bed-days-alpha` | The α parameter of a Gamma distribution for postoperative bed days | 2.14 |
+| `bed-days-beta` | The β parameter of a Gamma distribution for postoperative bed days | 3.04 |
 | `requiring-itu` | The percentage requiring Intensive Care Unit admission postoperatively | 0.097 |
-| `readmissions-alpha` | The $\alpha$ parameter of a Beta distribution for postoperative readmissions | 3.6 |
-| `readmissions-beta` | The $\beta$ parameter of a Beta distribution for postoperative readmissions | 31.5 |
+| `readmissions-alpha` | The α parameter of a Beta distribution for postoperative readmissions | 3.6 |
+| `readmissions-beta` | The β parameter of a Beta distribution for postoperative readmissions | 31.5 |
 
 ##### General parameters
 
 | Parameters  | Description | Default       |
 | ----------- | ----------- | ------------- |
-| `er-visits-alpha` | The $\alpha$ parameter of a Beta distribution for emergency department (room) visits | 0.78  |
-| `er-visits-beta` | The $\beta$ parameter of a Gamma distribution for emergency department (room) visits | 6.31 |
-| `initial-qaly-alpha` | The $\alpha$ parameter of a Beta distribution for the initial quality-adjusted life year before treatment | 37.79 |
-| `initial-qaly-beta` | The $\beta$ parameter of a Beta distribution for the initial quality-adjusted life year before treatment | 13.93 |
+| `er-visits-alpha` | The α parameter of a Beta distribution for emergency department (room) visits | 0.78  |
+| `er-visits-beta` | The β parameter of a Gamma distribution for emergency department (room) visits | 6.31 |
+| `initial-qaly-alpha` | The α parameter of a Beta distribution for the initial quality-adjusted life year before treatment | 37.79 |
+| `initial-qaly-beta` | The β parameter of a Beta distribution for the initial quality-adjusted life year before treatment | 13.93 |
 | `10-year-survival-probabilities` | The 10-year survival probabilties of 77-year-old adults with cancer -/+ postoperative complications | `[[ 0.967711, 0.612698, 0.52797, 0.473091, 0.438158, 0.413269, 0.3908, 0.370723, 0.354533, 0.343723, 0.339788 ], [ 0.967711, 0.571380518, 0.464723943, 0.395256173, 0.356781234, 0.328020278, 0.301236405, 0.277092946, 0.259023145, 0.243354875, 0.230547149 ]]` |
 | `nice-recommended-yearly-discount` | The National Institute of Health and Care Excellence recommended yearly discount in quality-adjusted life years | 0.035 |
-| `chemotherapy-qaly-decrement-alpha` | The $\alpha$ parameter of a Beta distribution for the decrement in quality-adjusted life years during and following chemotherapy (lasts on year) | 77.05 |
-| `chemotherapy-qaly-decrement-beta` | The $\beta$ parameter of a Beta distribution for the decrement in quality-adjusted life years during and following chemotherapy (lasts on year) | 163.73 | 
+| `chemotherapy-qaly-decrement-alpha` | The α parameter of a Beta distribution for the decrement in quality-adjusted life years during and following chemotherapy (lasts on year) | 77.05 |
+| `chemotherapy-qaly-decrement-beta` | The β parameter of a Beta distribution for the decrement in quality-adjusted life years during and following chemotherapy (lasts on year) | 163.73 | 
 
 #### Unit costs
 
